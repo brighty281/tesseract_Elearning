@@ -37,6 +37,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             return instance
         else:
             raise serializers.ValidationError({"password": "Password is required."})
+        
+
+
 
 class OtpVerificationSerializer(serializers.Serializer):
     email=serializers.EmailField()

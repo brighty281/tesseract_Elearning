@@ -32,7 +32,7 @@ function StudentPrivateRoutes({children}) {
         return <Navigate to="/login" />;
     }
 
-    if ((isAuthenticated.is_admin || isAuthenticated.is_staff)) {
+    if ((isAuthenticated.is_admin || isAuthenticated.is_teacher)) {
         return <Navigate to="/login" />;
     }
     

@@ -1,12 +1,16 @@
 import React from 'react';
+import AdminHomeCards from './dashboardcomponents/AdminHomeCards';
+import AdminChartOrder from './dashboardcomponents/AdminChartOrder';
 
 function AdminDashboard() {
   return (
-    <div className="h-screen flex flex-col justify-start items-center bg-black text-white">
-      <div className="mt-10 text-center">
-        <h2 className="text-3xl mb-4">Welcome Admin</h2>
-        <h3 className="text-2xl">Admin Dashboard</h3>
-      </div>
+    <div>
+      <div class="w-full items-center justify-center bg-gray-200 min-h-screen transition-all main">
+          <div  className='p-6'>
+            <AdminHomeCards/> 
+            <AdminChartOrder/>
+          </div>
+        </div>
     </div>
   );
 }

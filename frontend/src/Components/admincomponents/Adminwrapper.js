@@ -10,6 +10,13 @@ import AdminStudentlist from '../../Pages/adminpages/AdminStudentlist'
 import AdminTeacherslist from '../../Pages/adminpages/AdminTeacherslist'
 import AdminTeacherRequests from '../../Pages/adminpages/AdminTeacherRequests'
 import AdminPrivateRoutes from '../PrivateRoutes/AdminPrivateRoutes';
+import AdminTeacherVerify from '../../Pages/adminpages/AdminTeacherVerify'
+import AdminOrders from '../../Pages/adminpages/AdminOrders'
+import AdminCourses from '../../Pages/adminpages/AdminCourses'
+import SalesReportToday from '../../Pages/adminpages/salesreport/SalesReportToday'
+import SalesReportMonth from '../../Pages/adminpages/salesreport/SalesReportMonth'
+import SalesReportWeekly from '../../Pages/adminpages/salesreport/SalesReportWeekly'
+import SalesReportYear from '../../Pages/adminpages/salesreport/SalesReportYear'
 function Adminwrapper() {
   const dispatch=useDispatch()
   const authentication_user=useSelector(state=>state.authentication_user)
@@ -49,6 +56,17 @@ function Adminwrapper() {
             <Route path="/studentslist" element={<AdminPrivateRoutes><AdminStudentlist/></AdminPrivateRoutes>}/>
             <Route path="/teacherslist" element={<AdminPrivateRoutes><AdminTeacherslist/></AdminPrivateRoutes>}/>
             <Route path="/teachers_requests" element={<AdminPrivateRoutes><AdminTeacherRequests/></AdminPrivateRoutes>}/>
+
+            <Route path="/verify_document/:id" element={<AdminPrivateRoutes><AdminTeacherVerify/></AdminPrivateRoutes>}/>
+            <Route path="/orders" element={<AdminPrivateRoutes><AdminOrders/></AdminPrivateRoutes>} />
+
+            <Route path="/all_courses" element={<AdminPrivateRoutes><AdminCourses/></AdminPrivateRoutes>}/>
+
+            <Route path="/salesreport_today" element={<AdminPrivateRoutes><SalesReportToday/></AdminPrivateRoutes>} />
+            <Route path="/salesreport_monthly" element={<AdminPrivateRoutes><SalesReportMonth/></AdminPrivateRoutes>} />
+            <Route path="salesreport_weekly" element={<AdminPrivateRoutes><SalesReportWeekly/></AdminPrivateRoutes>} />
+            <Route path="/salesreport_yearly" element={<AdminPrivateRoutes><SalesReportYear/></AdminPrivateRoutes>} />
+            
         </Routes>
       
     </div>

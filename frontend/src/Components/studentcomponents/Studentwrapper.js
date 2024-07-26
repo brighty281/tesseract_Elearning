@@ -17,6 +17,14 @@ import StudentProfile from '../../Pages/studentpages/profile/StudentProfile'
 import ProfileEdit from '../../Pages/studentpages/profile/ProfileEdit'
 import All_courses from '../../Pages/studentpages/course/All_courses'
 import Coursedetail from '../../Pages/studentpages/course/Coursedetail'
+import Mycourses from '../../Pages/studentpages/course/Mycourses'
+import Course_videoplayer from '../../Pages/studentpages/course/Course_videoplayer'
+import StudentMessages from '../../Pages/studentpages/messages/StudentMessages'
+import CourseComunity from '../../Pages/studentpages/messages/CourseComunity'
+import ChatTeacherslist from '../../Pages/studentpages/messages/ChatTeacherslist'
+import ChatCommunitylist from '../../Pages/studentpages/messages/ChatCommunitylist'
+import StudentCommunityChat from '../../Pages/studentpages/messages/StudentCommunityChat'
+import ChatwithTeacher from '../../Pages/studentpages/messages/ChatwithTeacher'
 
 function Studentwrapper() {
   const dispatch=useDispatch();
@@ -66,9 +74,18 @@ function Studentwrapper() {
             <Route path="profile_edit" element={<ProfileEdit/>}/>
 
             {/* course view */}
-            <Route path="/all_course" element={<StudentPrivateRoutes><All_courses/></StudentPrivateRoutes>}/>
-            <Route path="course_view/:id" element={<StudentPrivateRoutes><Coursedetail/></StudentPrivateRoutes>}/>
+            <Route path="/all_course" element={<All_courses/>}/>
+            <Route path="course_view/:id" element={<Coursedetail/>}/>
+            <Route path="/my_courses" element={<StudentPrivateRoutes><Mycourses/></StudentPrivateRoutes>} />
 
+            <Route path="/video_player/:id/:vid" element={<StudentPrivateRoutes><Course_videoplayer/></StudentPrivateRoutes>}/>
+            <Route path="/student_chat/:user_id/:teacher_id" element={<StudentPrivateRoutes><StudentMessages/></StudentPrivateRoutes>}/>
+            <Route path="/course_community/:id/:code" element={<StudentPrivateRoutes><CourseComunity/></StudentPrivateRoutes>}/>
+
+            <Route path="/chat_teacherslist" element={<StudentPrivateRoutes><ChatTeacherslist/></StudentPrivateRoutes>}/>
+            <Route path="/communitylist" element={<StudentPrivateRoutes><ChatCommunitylist/></StudentPrivateRoutes>}/>
+            <Route path="/community_conversation/:id/:code" element={<StudentPrivateRoutes><StudentCommunityChat/></StudentPrivateRoutes>} />
+            <Route path="/chat_with_teacher/:course_id/:teacher_id" element={<StudentPrivateRoutes><ChatwithTeacher/></StudentPrivateRoutes>}/>
         </Routes>
 
       </>

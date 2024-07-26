@@ -14,12 +14,12 @@ function Teacherlogin() {
   const dispatch = useDispatch();
   const authentication_user = useSelector(state => state.authentication_user);
 
-  // useEffect(() => {
-  //   if (authentication_user.isAuthenticated && !authentication_user.isAdmin ) {
-  //     console.log('User is already authenticated. Redirecting...');
-  //     navigate('/teacher/home');
-  //   }
-  // }, [authentication_user.isAuthenticated, authentication_user.isAdmin, navigate]);
+  useEffect(() => {
+    if (authentication_user.isAuthenticated && !authentication_user.isAdmin ) {
+      console.log('User is already authenticated. Redirecting...');
+      navigate('/teacher/home');
+    }
+  }, [authentication_user.isAuthenticated, authentication_user.isAdmin, navigate]);
 
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -51,7 +51,7 @@ function Teacherlogin() {
 
     const formData = new FormData();
     formData.append('email', email);
-    formData.append('password', password);
+    formData.append('password', password);  
 
     try {
       const res = await axios.post(`${baseURL}/api/users/teacher/login/`, formData);
@@ -65,11 +65,13 @@ function Teacherlogin() {
 
         dispatch(
           set_Authentication({
+            
             name: jwtDecode(res.data.access_token).username,
             isAuthenticated: true,
             userid: res.data.userid,
             isAdmin: false,
             isTeacher: true,
+
           })
         );
         if(verified){

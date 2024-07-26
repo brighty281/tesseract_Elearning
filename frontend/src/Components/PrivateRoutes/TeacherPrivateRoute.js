@@ -31,7 +31,11 @@ function TeacherPrivateRoute({children}) {
       if (isLoading) {
         return <div>Loading...</div>;
       }
-    
+      
+      if (!isAuthenticated.is_teacher){
+        return <Navigate to="/teacher/login" />;
+      }
+      
     
       if (!isAuthenticated.is_authenticated) {
         return <Navigate to="/teacher/login" />;

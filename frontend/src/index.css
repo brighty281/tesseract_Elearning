@@ -6,3 +6,8 @@
     background-color: black;
     color: white;
 } */
+
+body{
+    @apply font-montserrat;
+    background-color: black;
+}

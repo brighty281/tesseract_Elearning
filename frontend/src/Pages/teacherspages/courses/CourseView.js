@@ -38,26 +38,26 @@ function CourseView() {
           const data=response.data
           console.log('data',data);
           setCourse({
-            course_name: data.course_name,
-            user: data.user,
-            description: data.description,
-            benefit1: data.benefit1,
-            level: data.level,
-            benefit2: data.benefit2,
-            benefit3: data.benefit3,
-            demo_video: data.demo_video,
-            original_price: data.original_price,
-            offer_price: data.offer_price,
+            course_name: data.course.course_name,
+            user: data.course.user,
+            description: data.course.description,
+            benefit1: data.course.benefit1,
+            level: data.course.level,
+            benefit2: data.course.benefit2,
+            benefit3: data.course.benefit3,
+            demo_video: data.course.demo_video,
+            original_price: data.course.original_price,
+            offer_price: data.course.offer_price,
             videos: data.videos,
-            is_blocked: data.is_blocked,
-            is_accepted: data.is_accepted,
-            is_rejected: data.is_rejected,
-            reject_reason: data.reject_reason
-
+            is_blocked: data.course.is_blocked,
+            is_accepted: data.course.is_accepted,
+            is_rejected: data.course.is_rejected,
+            reject_reason: data.course.reject_reason
 
           });
-          console.log(response.data);
-          console.log('ss',data.is_accepted);
+          console.log("data is given by",response.data);
+          
+        //   console.log('ss',data.is_accepted);
             // if (data.is_accepted===false){
             //     toast.error(' Your Course is Not yet Verified');
             // }
@@ -131,7 +131,7 @@ function CourseView() {
                         <svg className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                         </svg>
-                        <Link to='course_list'> 
+                        <Link to='/teacher/course_list'> 
                         <span className="ms-1 text-sm font-medium text-gray-100 hover:text-orange-600 md:ms-2 dark:text-black-400 dark:hover:text-orange">Courses</span>
                         </Link>
                     </div>
@@ -187,11 +187,7 @@ function CourseView() {
                     className="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
                     >
                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDelayButton">
-                        {/* <li>
-                            <Link to={`/teacher/edit_course/${id}`}>
-                                <span aria-describedby="tier-startup" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit Course</span>
-                            </Link>
-                        </li> */}
+                       
                         <li>
                             {course.is_blocked ? (
                                 <button onClick={() => unblockCourse(id)} aria-describedby="tier-startup"  className="block px-4 py-2  text-green-500  dark:hover:text-green-500">
@@ -203,6 +199,7 @@ function CourseView() {
                                 </button>
                             )}
                         </li>
+                        
                         
                     </ul>
                     </div>
@@ -234,13 +231,13 @@ function CourseView() {
                             
                             <div className="md:col-span-6 mt-5 mx-10" >
                                     <p className='mt-3' style={{  fontSize: '1.9rem'}} >
-                                    {capitalizeFirstLetter(course.course_name)}
+                                        {course.course_name}
                                     </p>
                             </div>
 
 
                             <div className="md:col-span-6 mt-3  mx-10 flex">
-                                    <p style={{  fontSize: '1rem'}}>by {capitalizeFirstLetter(course.user)} </p>
+                                    <p style={{  fontSize: '1rem'}}>by {course.user} </p>
 
                                     <svg className="mt-1 ml-2 w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 flex-shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
@@ -259,10 +256,7 @@ function CourseView() {
                                 <span className='text-indigo-500' >Course Level </span> :  {course.level}</p>
                             </div>
 
-                            {/* <div className="md:col-span-6 mt-3  mx-10">
-                                <p style={{  fontSize: '1.2rem'}}>
-                                <span className='text-indigo-500' >Category </span>:  FullStack Development</p>
-                            </div> */}
+                           
                         </div>
                     </div>
                 </div>
@@ -299,8 +293,7 @@ function CourseView() {
                         24 x 7 support available
                     </li>
                     </ul>
-                    {/* <span aria-describedby="tier-startup" className="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 bg-green-600 text-white shadow-sm hover:bg-green-800 focus-visible:outline-red-600">Buy plan</span> */}
-
+                    
                 </div>
                 </div>
 
@@ -344,18 +337,50 @@ function CourseView() {
                                             </svg>
                                             <span className='text-lg'>Free updates for <span class="font-semibold text-white-900 dark:text-white">6 months</span></span>
                                         </li>
-
-
+                                        <li class="flex items-center space-x-3 rtl:space-x-reverse">
+                                            <button onClick={()=>navigate(`/teacher/add_video/${id}`)}   className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700'>add videos</button>
+                                        </li>
                                         
                                     </ul>
-
+                                
 
                             </div>
+                            
                         </div>
+                        
+
                     </div>
+                    <div className="lg:col-span-3">
+                            <table className="min-w-full divide-y divide-gray-200 bg-black shadow-md">
+                                <thead className="">
+                                    <tr>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Chapter</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Duration</th>
+                                        {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Actions</th> */}
+                                    </tr>
+                                </thead>
+                                <tbody className=" divide-y">
+                                    {course.videos.map((video)=>(
+                                        <tr key={video.id}>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">{video.video_name}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">{video.duration}</td>
+                                            {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-100">
+                                                <button className="bg-indigo-600 text-white px-3 py-1 rounded-md hover:bg-indigo-700">Play</button>
+                                                
+                                            </td> */}
+                                        </tr>
+                                    ))}
+                                   
+                                </tbody>
+                            </table>
+                        </div>
+                    
+                   
+
                 </div>
-        </div>
-        </div>
+            </div>
+        </div>                       
+
         </div>
     </div>
 

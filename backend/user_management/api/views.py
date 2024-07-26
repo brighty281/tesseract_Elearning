@@ -94,7 +94,8 @@ class UserDetails(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
         user = User.objects.get(id=request.user.id)
-        print(user.is_superuser)
+        print('superuser status',user.is_superuser)
+        print('is_teacher status',user.is_staff)
         data = UserSerializer(user).data
         content = data
         return Response(content)

@@ -3,12 +3,18 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { CiCircleInfo } from "react-icons/ci";
 import { Link,useNavigate,useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux';
 function Coursedetail() {
+
+    const authentication_user=useSelector(state=>state.authentication_user)
 
     const baseURL = "http://127.0.0.1:8000";
     const navigate=useNavigate()
-
+    const user_id=localStorage.getItem('userid')
+    const token = localStorage.getItem('access');
+    const [alreadyPurchased, setAlreadyPurchased] = useState(false);
     const [course, setCourse] = useState({
+        id:'',
         course_name:'',
         user:'',
         description:'',
@@ -34,26 +40,26 @@ function Coursedetail() {
           const data=response.data
           console.log('data',data);
           setCourse({
-            course_name: data.course_name,
-            user: data.user,
-            description: data.description,
-            benefit1: data.benefit1,
-            level: data.level,
-            benefit2: data.benefit2,
-            benefit3: data.benefit3,
-            demo_video: data.demo_video,
-            original_price: data.original_price,
-            offer_price: data.offer_price,
+            id:data.course.id,
+            course_name: data.course.course_name,
+            user: data.course.user,
+            description: data.course.description,
+            benefit1: data.course.benefit1,
+            level: data.course.level,
+            benefit2: data.course.benefit2,
+            benefit3: data.course.benefit3,
+            demo_video: data.course.demo_video,
+            original_price: data.course.original_price,
+            offer_price: data.course.offer_price,
             videos: data.videos,
-            is_blocked: data.is_blocked,
-            is_accepted: data.is_accepted,
-            is_rejected: data.is_rejected,
-            reject_reason: data.reject_reason
-
+            is_blocked: data.course.is_blocked,
+            is_accepted: data.course.is_accepted,
+            is_rejected: data.course.is_rejected,
+            reject_reason: data.course.reject_reason
 
           });
           console.log(response.data);
-          console.log('ss',data.is_accepted);
+         
             // if (data.is_accepted===false){
             //     toast.error(' Your Course is Not yet Verified');
             // }
@@ -66,8 +72,105 @@ function Coursedetail() {
     return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
+    const loadScript = () => {
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        document.body.appendChild(script);
+      };
+
+
+    const showRazorpay = async () => {
+        const res = await loadScript();
+        // console.log(res);
+        let bodyData = new FormData();
+        bodyData.append("amount", course.offer_price);
+        bodyData.append("course", id);
+        bodyData.append("user_id", user_id);
+    
+        const data = await axios({
+          url: `${baseURL}/api/students/pay/`,
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          data: bodyData,
+        }).then((res) => {
+          return res;
+        });
+    
+
+    
+        var options = {
+          key_id: process.env.REACT_APP_RAZOR_KEY_ID, 
+          key_secret: process.env.REACT_APP_RAZOR_KEY_ID,
+          amount: data.data.payment.amount,
+          currency: "INR",
+          name: course.course_name,
+          description: "Test teansaction",
+          image: "", // add image url
+          order_id: data.data.payment.id,
+          handler: function (response) {
+            checkCoursePurchase()
+            alert('payment successfull')
+            // setPaymentSuccess(true); 
+    
+          },
+          prefill: {
+            name: "User's name",
+            email: "User's email",
+            contact: "User's phone",
+          },
+          notes: {
+            address: "Razorpay Corporate Office",
+          },
+          theme: {
+            color: "#3399cc",
+          },
+        };
+    
+        var rzp1 = new window.Razorpay(options);
+        rzp1.open();
+        
+      };
+
+      const checkCoursePurchase = async () => {
+        try {
+            const response = await axios.get(`${baseURL}/api/students/purchased/${id}/`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log('Checkcoursepurchase success',response.data);
+            setAlreadyPurchased(response.data.purchased);
+            
+            
+        } catch (error) {
+            console.error("Error checking course purchase:", error);
+        }
+    };
+
+
+    useEffect(()=>{
+        checkCoursePurchase();
+    },[id])
+
+
+    const go_to_video=(id,first_vid)=>{
+        navigate(`/video_player/${id}/${first_vid}`)
+        
+    }
+
+
+
+
+
+
     useEffect(() => {
         fetchCourse();
+        
+        
       }, [id]);
 
       if (!course) {
@@ -99,7 +202,7 @@ function Coursedetail() {
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                         </svg>
                         <Link to='/all_course'> 
-                        <span className="ms-1 text-sm font-medium text-gray-100 hover:text-orange-600 md:ms-2 dark:text-black-400 dark:hover:text-orange">Courses</span>
+                            <span className="ms-1 text-sm font-medium text-gray-100 hover:text-orange-600 md:ms-2 dark:text-black-400 dark:hover:text-orange">Courses</span>
                         </Link>
                     </div>
                     </li>
@@ -113,10 +216,19 @@ function Coursedetail() {
                     </li>
                 </ol>
                 <div className='flex'>
+                {!authentication_user.isAuthenticated ?(
+                    <button onClick={()=>navigate('/login')} className='bg-yellow-500 font-semibold text-black px-4 py-2 rounded'>Login to Buy</button>
+                ):
+                   (
+                alreadyPurchased ? (
+                                  <button onClick={()=>go_to_video(course.id,course.videos[0].id)} className="bg-green-600 mt-5 ml-12 text-white py-2 px-4 rounded">Start lesson</button>
+                                ):(<button onClick={showRazorpay} className="bg-blue-700 mt-5 ml-12 text-white py-2 px-4 rounded">
+                                    Buy Now
+                                </button>
+                                )
 
-                   
-
-
+                )
+                }
                    
                 </div>
                 </nav>
@@ -130,7 +242,7 @@ function Coursedetail() {
                             </video>
                         </div>
                         )}
-
+            
                     <div className="lg:col-span-3">
                         <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
                             <div className="md:col-span-6  mx-10">
@@ -138,7 +250,7 @@ function Coursedetail() {
                                 {course.is_rejected &&(
                                     <span className='flex text-red-500 font-semibold text-md'><CiCircleInfo  className='mr-3 mt-1 font-semibold'/>{course.reject_reason}</span>
                                 )}
-
+                                
                             </div>
                             
                             <div className="md:col-span-6 mt-5 mx-10" >
@@ -261,9 +373,42 @@ function Coursedetail() {
 
                             </div>
                         </div>
-                        <button className="bg-blue-700 mt-5 ml-12 text-white py-2 px-4 rounded">
-                            Buy Now
-                        </button>
+                        
+                        <div className="lg:col-span-3 mt-9">
+                            <div className='text-2xl mb-4'> 
+                                <h3>Course contents</h3>
+                            </div>
+                            <table className="min-w-full divide-y divide-gray-200 bg-black shadow-md">
+                                <thead className="">
+                                    <tr>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Chapter</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Duration</th>
+                                        {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Actions</th> */}
+                                    </tr>
+                                </thead>
+                                <tbody className=" divide-y">
+                                    {course.videos.map((video)=>(
+                                        <tr key={video.id}>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">{video.video_name}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">{video.duration}</td>
+                                            
+                                        </tr>
+                                    ))}
+                                   
+                                </tbody>
+                            </table>
+                            {!authentication_user.isAuthenticated ?(
+                    <button onClick={()=>navigate('/login')} className='bg-yellow-500 text-black font-semibold px-4 py-2 rounded'>Login to Buy</button>
+                ):
+                                (       alreadyPurchased ? (
+                                        <button  className="bg-green-600 mt-5 ml-12 text-white py-2 px-4 rounded">Start lesson</button>
+                                    ):(<button onClick={showRazorpay} className="bg-blue-700 mt-5 ml-12 text-white py-2 px-4 rounded">
+                                    Buy Now
+                                    </button>
+                                    ))
+                            }
+                        
+                        </div>
                     </div>
                 </div>
         </div>

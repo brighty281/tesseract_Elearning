@@ -146,6 +146,7 @@ function AdminTeacherslist() {
         </tr>
       </thead>
       <tbody>
+        {filteredUsers.length === 0 && <tr><td className='m-5 items-center justify-center flex'>No Teachers Found</td></tr> }
         {filteredUsers.map((user) => (
           <tr key={user.id}>
             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">

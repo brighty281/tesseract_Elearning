@@ -94,8 +94,7 @@ const isAuthUser = async () => {
             const [checkAdmin, checkTeacher] = await Promise.all([fetchisAdmin(), fetchisTeacher()]);
             return { userid:userid,name: decoded.username, isAuthenticated: true, isAdmin: checkAdmin, isTeacher: checkTeacher };
 
-
-         
+  
         } else {
             return { name: null, isAuthenticated: false,isAdmin:false };
         }
